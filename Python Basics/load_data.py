@@ -2,6 +2,9 @@
 
 import os
 import pandas as pd
+import random
+import math
+import sys
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -87,6 +90,34 @@ def count_lines(filename):
         print(f"Error: File '{filename}' not found.")
         return 0
 
+# Work with the file system 
+# List files in the current project folder
+def list_files():
+    print("Files in project folder:")
+    for file in os.listdir(BASE_DIR):
+        print("-", file)
+
+# Randomly sample rows from a DataFrame
+def random_sample(df, n=3):
+    if df is None:
+        print("No data to sample.")
+        return None
+    
+    n = min(n, len(df))
+    sample = df.sample(n)
+    print(f"Random sample ({n} rows):")
+    return sample
+
+# math - Basic Calculations
+def average_salary(df):
+    if df is None or "salary" not in df.columns:
+        print("Salary column not found.")
+        return None
+
+    avg = df["salary"].mean()
+    print("Average Salary:", math.floor(avg))
+    return avg
+
 
 # Example Usage
 if __name__ == "__main__":
@@ -101,3 +132,28 @@ if __name__ == "__main__":
         lines.append("Ice Cream")
         write_txt(lines, "foods_updated.txt")
         print("Total lines in file:", count_lines("foods_updated.txt"))
+
+    # Test List Files
+    list_files()
+
+    # Test Random 
+    df = load_csv("dataset.csv")
+    sample = random_sample(df, 3)
+    print(sample)
+
+    # Test Math
+    df = load_csv("dataset.csv")
+    average_salary(df)
+
+    # sys - Command Line Arguments
+    if len(sys.argv) < 2:
+        print("Usage: Python load_data.py <filename>")
+        sys.exit()
+
+        filename = sys.argv[1]
+
+        df = load_csv(filename)
+        if df is not None:
+            list_files()
+            random_sample(df, 3)
+            average_salary(df)
